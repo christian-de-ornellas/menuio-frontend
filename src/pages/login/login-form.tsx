@@ -33,8 +33,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         loginMutation.mutate(data, {
             onSuccess: (response) => {
                 const token = response?.token;
+                const userId = response?.profile?._id;
                 if (token) {
                     localStorage.setItem("authToken", token);
+                    localStorage.setItem("userId", userId);
                     navigate("/home");
                 }
             },
