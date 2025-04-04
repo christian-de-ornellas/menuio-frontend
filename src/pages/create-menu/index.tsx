@@ -11,6 +11,8 @@ import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "../../component
 import {Table, TableHeader, TableRow, TableHead, TableBody, TableCell} from "../../components/ui/table";
 import useGetMenu from "../../hooks/menu/use-get-menu";
 import usePostMenu from "../../hooks/menu/use-post-menu";
+import useDeleteMenu from "../../hooks/menu/use-delete-menu";
+import {toast} from 'react-toastify';
 
 
 const menuSchema = z.object({
@@ -22,10 +24,11 @@ const menuSchema = z.object({
 type MenuFormData = z.infer<typeof menuSchema>;
 
 type MenuItem = {
+    id?: string;
     title: string;
     description: string;
-    image: string;
-    userId: string;
+    image: File;
+    userId?: string;
 };
 
 const CreateMenuPage = () => {
@@ -44,20 +47,26 @@ const CreateMenuPage = () => {
     });
 
     const onSubmit = (data: MenuFormData) => {
+
         const userId = localStorage.getItem("userId");
-        const newItem = {
+
+        if (!userId) return
+
+        postMenu.mutate({
             title: data.title,
             description: data.description,
             image: data.image[0],
-            userId,
-        };
+            userId
+        });
 
-        console.log({newItem});
-        postMenu.mutate({...newItem});
+        toast("Item adicionado com sucesso", {type: "success"});
 
         reset();
+
         setImagePreview(null);
     };
+
+    const deleteMenu = useDeleteMenu();
 
     const columns: ColumnDef<MenuItem>[] = [
         {accessorKey: "title", header: "Título"},
@@ -65,9 +74,29 @@ const CreateMenuPage = () => {
         {
             accessorKey: "image",
             header: "Imagem",
-            cell: ({row}) => <img src={`${import.meta.env.VITE_PUBLIC}${row.original?.image}`} alt="Menu" className="w-16 h-16 object-cover"/>,
+            cell: ({row}) => (
+                <img
+                    src={`${import.meta.env.VITE_PUBLIC}${row.original?.image}`}
+                    alt="Menu"
+                    className="w-16 h-16 object-cover"
+                />
+            ),
+        },
+        {
+            id: "actions",
+            header: "Ações",
+            cell: ({row}) => (
+                <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => deleteMenu.mutate(row.original._id)}
+                >
+                    Excluir
+                </Button>
+            ),
         },
     ];
+
 
     const table = useReactTable({
         data: menu?.data?.items || [],

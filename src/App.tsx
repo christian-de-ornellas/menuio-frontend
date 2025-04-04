@@ -7,6 +7,7 @@ import NotFoundPage from "./pages/not-found";
 import CreateMenu from "./pages/create-menu";
 import Wrapper from "./components/template/wrapper";
 
+
 function App() {
     return (
         <Router>
