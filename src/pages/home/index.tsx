@@ -2,7 +2,7 @@ import useGetMenu from "../../hooks/menu/use-get-menu";
 
 
 export default function HomePage() {
-    const menu = useGetMenu()
+    const menu = useGetMenu({page: 1, limit: 10});
 
     return (
         <article className="flex gap-4">

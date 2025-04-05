@@ -14,6 +14,13 @@ import usePostMenu from "../../hooks/menu/use-post-menu";
 import useDeleteMenu from "../../hooks/menu/use-delete-menu";
 import {toast} from 'react-toastify';
 import {MagnifyingGlass} from "react-loader-spinner";
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationNext,
+    PaginationPrevious
+} from "../../components/ui/pagination";
 
 
 const menuSchema = z.object({
@@ -25,7 +32,7 @@ const menuSchema = z.object({
 type MenuFormData = z.infer<typeof menuSchema>;
 
 type MenuItem = {
-    id?: string;
+    _id?: string;
     title: string;
     description: string;
     image: File;
@@ -34,9 +41,13 @@ type MenuItem = {
 
 const CreateMenuPage = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const menu = useGetMenu()
     const postMenu = usePostMenu();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [page, setPage] = useState<number>(1);
+    const [limit] = useState<number>(10);
+
+    const menu = useGetMenu({page, limit})
+
 
     const {
         register,
@@ -61,7 +72,6 @@ const CreateMenuPage = () => {
         });
         setIsDialogOpen(false)
         toast("Item adicionado com sucesso", {type: "success"});
-
         reset();
 
         setImagePreview(null);
@@ -90,7 +100,12 @@ const CreateMenuPage = () => {
                 <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => deleteMenu.mutate(row.original?._id)}
+                    onClick={() => {
+                        const confirmed = window.confirm(`Tem certeza que deseja excluir "${row.original.title}"?`);
+                        if (confirmed && row.original._id) {
+                            deleteMenu.mutate(row.original._id);
+                        }
+                    }}
                 >
                     Excluir
                 </Button>
@@ -153,7 +168,7 @@ const CreateMenuPage = () => {
                     </Card>
                 </DialogContent>
             </Dialog>
-            {!menu.isLoading ? (<Table>
+            {!menu.isLoading ? (<><Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -176,7 +191,31 @@ const CreateMenuPage = () => {
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>) : <MagnifyingGlass
+            </Table>
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                size={10}
+                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                            />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <span className="px-4 py-2 text-sm">Página {page}</span>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext
+                                size={10}
+                                onClick={() => {
+                                    const totalPages = Math.ceil((menu?.data?.totalItems || 0) / limit);
+                                    setPage((prev) => Math.min(prev + 1, totalPages));
+                                }}
+                                className={menu?.data?.items.length < limit ? "pointer-events-none opacity-50" : ""}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination></>) : <MagnifyingGlass
                 visible={true}
                 height="80"
                 width="80"
