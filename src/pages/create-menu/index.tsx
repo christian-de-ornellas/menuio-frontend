@@ -13,6 +13,7 @@ import useGetMenu from "../../hooks/menu/use-get-menu";
 import usePostMenu from "../../hooks/menu/use-post-menu";
 import useDeleteMenu from "../../hooks/menu/use-delete-menu";
 import {toast} from 'react-toastify';
+import {MagnifyingGlass} from "react-loader-spinner";
 
 
 const menuSchema = z.object({
@@ -68,6 +69,8 @@ const CreateMenuPage = () => {
 
     const deleteMenu = useDeleteMenu();
 
+    // @ts-ignore
+    // @ts-ignore
     const columns: ColumnDef<MenuItem>[] = [
         {accessorKey: "title", header: "Título"},
         {accessorKey: "description", header: "Descrição"},
@@ -89,7 +92,7 @@ const CreateMenuPage = () => {
                 <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => deleteMenu.mutate(row.original._id)}
+                    onClick={() => deleteMenu.mutate(row.original?._id)}
                 >
                     Excluir
                 </Button>
@@ -177,7 +180,16 @@ const CreateMenuPage = () => {
                         </TableRow>
                     ))}
                 </TableBody>
-            </Table>) : <>Carregando...</>}
+            </Table>) : <MagnifyingGlass
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="magnifying-glass-loading"
+                wrapperStyle={{}}
+                wrapperClass="magnifying-glass-wrapper"
+                glassColor="#c0efff"
+                color="#e15b64"
+            />}
         </div>
     );
 };
