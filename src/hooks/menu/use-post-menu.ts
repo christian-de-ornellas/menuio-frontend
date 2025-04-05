@@ -31,8 +31,8 @@ export default function usePostMenu() {
 
     return useMutation({
         mutationFn: createMenu,
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ["menu"]});
+        onSuccess: async() => {
+          await queryClient.invalidateQueries({queryKey: ["menu"]});
         },
     });
 }

@@ -13,10 +13,15 @@ const useDeleteMenu = () => {
             });
             return response.data;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["menu"]);
+        onSuccess: async () => {
+
+            await queryClient.invalidateQueries({queryKey: ["menu"]});
             toast("Item removido com sucesso!", {type: "success"})
         },
+        onError: err => {
+            console.error(err);
+            toast("Ops: não conseguimos remover o item!", {type: "error"})
+        }
     });
 };
 
