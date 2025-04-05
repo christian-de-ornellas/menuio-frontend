@@ -36,7 +36,7 @@ const CreateMenuPage = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const menu = useGetMenu()
     const postMenu = usePostMenu();
-
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const {
         register,
@@ -59,7 +59,7 @@ const CreateMenuPage = () => {
             image: data.image[0],
             userId
         });
-
+        setIsDialogOpen(false)
         toast("Item adicionado com sucesso", {type: "success"});
 
         reset();
@@ -69,8 +69,6 @@ const CreateMenuPage = () => {
 
     const deleteMenu = useDeleteMenu();
 
-    // @ts-ignore
-    // @ts-ignore
     const columns: ColumnDef<MenuItem>[] = [
         {accessorKey: "title", header: "Título"},
         {accessorKey: "description", header: "Descrição"},
@@ -100,7 +98,6 @@ const CreateMenuPage = () => {
         },
     ];
 
-
     const table = useReactTable({
         data: menu?.data?.items || [],
         columns,
@@ -109,8 +106,7 @@ const CreateMenuPage = () => {
 
     return (
         <div className="flex flex-col gap-6">
-
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <Button asChild className="w-44 cursor-pointer">
                     <DialogTrigger>Adicionar Item</DialogTrigger>
                 </Button>

@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLoginHelper from "./use-login-helper";
 import {  useNavigate } from "react-router";
+import {toast} from "react-toastify";
 
 const loginSchema = z.object({
     email: z.string().email("Email inválido"),
@@ -38,10 +39,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                     localStorage.setItem("authToken", token);
                     localStorage.setItem("userId", userId);
                     navigate("/home");
+                    toast("Seja bem vindo ao nosso sistema")
                 }
             },
             onError: (error) => {
                 console.error("Erro ao fazer login:", error);
+                toast("Ops: aconteceu um error no nosso servidor.",{type: "error"})
             }
         });
     };
