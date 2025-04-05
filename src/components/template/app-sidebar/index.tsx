@@ -1,5 +1,6 @@
-import * as React from "react"
-import {GalleryVerticalEnd} from "lucide-react"
+import * as React from "react";
+import {GalleryVerticalEnd, LogOut} from "lucide-react";
+import {useNavigate, Link} from "react-router";
 
 import {
     Sidebar,
@@ -12,8 +13,7 @@ import {
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
-} from "../../ui/sidebar"
-import {Link} from "react-router";
+} from "../../ui/sidebar";
 
 const data = {
     navMain: [
@@ -33,13 +33,19 @@ const data = {
                     title: "Ver Cardápio",
                     url: "/storefront",
                 },
-
             ],
-        }
+        },
     ],
-}
+};
 
 export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.clear();
+        navigate("/");
+    };
+
     return (
         <Sidebar variant="floating" {...props}>
             <SidebarHeader>
@@ -47,9 +53,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link to="#">
-                                <div
-                                    className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                                    <GalleryVerticalEnd className="size-4"/>
+                                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                                    <GalleryVerticalEnd className="size-4" />
                                 </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold">Meu Menu</span>
@@ -59,6 +64,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
+
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarMenu className="gap-2">
@@ -71,10 +77,10 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                                 </SidebarMenuButton>
                                 {item.items?.length ? (
                                     <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                                        {item.items.map((item) => (
-                                            <SidebarMenuSubItem key={item.title}>
+                                        {item.items.map((subItem) => (
+                                            <SidebarMenuSubItem key={subItem.title}>
                                                 <SidebarMenuSubButton asChild>
-                                                    <Link to={item.url}>{item.title}</Link>
+                                                    <Link to={subItem.url}>{subItem.title}</Link>
                                                 </SidebarMenuSubButton>
                                             </SidebarMenuSubItem>
                                         ))}
@@ -82,9 +88,20 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                                 ) : null}
                             </SidebarMenuItem>
                         ))}
+
+                        {/* Botão de Logout */}
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                className="text-red-600 hover:bg-red-100 dark:hover:bg-red-900"
+                                onClick={handleLogout}
+                            >
+                                <LogOut className="mr-2 size-4" />
+                                Sair
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroup>
             </SidebarContent>
         </Sidebar>
-    )
+    );
 }
