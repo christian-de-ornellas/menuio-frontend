@@ -22,12 +22,12 @@ const data = {
             url: "#",
             items: [
                 {
-                    title: "Dashboard",
+                    title: "Início",
                     url: "/home",
                 },
                 {
-                    title: "Criar Cardápio",
-                    url: "/create-menu",
+                    title: "Itens do Cardápio",
+                    url: "/menu-itens",
                 },
                 {
                     title: "Ver Cardápio",
@@ -92,7 +92,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                         {/* Botão de Logout */}
                         <SidebarMenuItem>
                             <SidebarMenuButton
-                                className="text-red-600 hover:bg-red-100 dark:hover:bg-red-900"
+                                className="text-red-600 hover:bg-red-100 hover:cursor-pointer dark:hover:bg-red-900"
                                 onClick={handleLogout}
                             >
                                 <LogOut className="mr-2 size-4" />

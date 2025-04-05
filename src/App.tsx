@@ -16,7 +16,7 @@ function App() {
 
                 <Route element={<Wrapper/>}>
                   <Route path="/home" element={<PrivateRoute element={<HomePage />} />} />
-                  <Route path="/create-menu" element={<PrivateRoute element={<CreateMenu />} />} />
+                  <Route path="/menu-itens" element={<PrivateRoute element={<CreateMenu />} />} />
                 </Route>
 
                 <Route path="/storefront" element={<StorefrontPage />} />
