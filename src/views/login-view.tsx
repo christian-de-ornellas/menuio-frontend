@@ -12,7 +12,7 @@ const LoginView = () => {
             <div className="w-96">
                 <Card>
                     <CardHeader>
-                        Sistema de Cardápio
+                        Cardápio Digital
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)}>
