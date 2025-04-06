@@ -1,31 +1,18 @@
-import {Card, CardContent} from "../../components/ui/card"
-import {Button} from "../../components/ui/button"
-import {Input} from "../../components/ui/input"
-import {useState} from "react"
-import useGetMenuService from "../../services/menu/use-get-menu-service.ts";
+import {Card, CardContent} from "../components/ui/card"
+import {Button} from "../components/ui/button"
+import {Input} from "../components/ui/input"
 import {MagnifyingGlass} from "react-loader-spinner";
-import {useDebounce} from "../../hooks/use-debounce.ts";
-
 import {
     Pagination,
     PaginationContent,
     PaginationItem,
     PaginationNext,
     PaginationPrevious
-} from "../../components/ui/pagination";
+} from "../components/ui/pagination";
+import {useStorefrontViewModel} from "../viewModels/storefront-view-model";
 
-export const StorefrontPage = () => {
-    const [search, setSearch] = useState("")
-    const debouncedSearch = useDebounce(search, 1000);
-    const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(6);
-    const items = useGetMenuService({page, limit, search: debouncedSearch})
-
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value);
-        setPage(1);
-    };
-
+const StorefrontView = () => {
+    const {items, handleSearch, setPage, page, limit, search} = useStorefrontViewModel();
 
     return (
         <article className="p-6">
@@ -84,7 +71,7 @@ export const StorefrontPage = () => {
                             size={10}
                             onClick={() => {
                                 const totalPages = Math.ceil((items?.data?.totalItems || 0) / limit);
-                                setPage((prev) => Math.min(prev + 1, totalPages));
+                                setPage((prev: number) => Math.min(prev + 1, totalPages));
                             }}
                             className={items?.data?.items.length < limit ? "pointer-events-none opacity-50" : ""}
                         />
@@ -94,3 +81,4 @@ export const StorefrontPage = () => {
         </article>
     )
 }
+export default StorefrontView
