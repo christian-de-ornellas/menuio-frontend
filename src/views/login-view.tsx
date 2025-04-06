@@ -13,6 +13,10 @@ const LoginView = () => {
                 <Card>
                     <CardHeader>
                         Cardápio Digital
+                        <small className="text-gray-500">
+                            <b>email</b>: demo@menuio.com <br/>
+                            <b>senha</b>: rootroot
+                        </small>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit(onSubmit)}>
