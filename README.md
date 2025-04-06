@@ -70,6 +70,13 @@ yarn && yarn dev
 ou 
 npm install && npm run dev
 ```
+5. Depois de rodar o backend é só rodar o frontend
+```bash
+
+yarn && yarn dev 
+ou 
+npm install && npm run dev
+```
 
 # Licensa
 Distribuído sob a licença MIT. Veja LICENSE para mais informações.
