@@ -4,7 +4,7 @@ import useGetMenuService from "../services/menu/use-get-menu-service.ts";
 
 export const useStorefrontViewModel = () => {
     const [search, setSearch] = useState("")
-    const debouncedSearch = useDebounce(search, 1000);
+    const debouncedSearch = useDebounce(search, 700);
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(6);
     const items = useGetMenuService({page, limit, search: debouncedSearch})
@@ -13,7 +13,6 @@ export const useStorefrontViewModel = () => {
         setSearch(e.target.value);
         setPage(1);
     };
-
 
     return {items, handleSearch, setPage, page, limit, search}
 }

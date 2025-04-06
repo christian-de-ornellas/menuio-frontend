@@ -3,7 +3,7 @@ import {useNavigate} from "react-router";
 import useLoginService from "../services/login/use-login-service.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {toast} from "react-toastify";
+import {showToast} from "../lib/toastify/toastify.ts";
 
 export const useLoginViewModel = () => {
     const loginSchema = z.object({
@@ -34,12 +34,12 @@ export const useLoginViewModel = () => {
                     localStorage.setItem("authToken", token);
                     localStorage.setItem("userId", userId);
                     navigate("/home");
-                    toast("Seja bem vindo ao nosso sistema")
+                    showToast("Seja bem vindo ao nosso sistema")
                 }
             },
             onError: (error: any) => {
                 console.error("Erro ao fazer login:", error);
-                toast("Ops: aconteceu um error no nosso servidor.", {type: "error"})
+                showToast("Ops: aconteceu um error no nosso servidor.", {type: "error"})
             }
         });
     };

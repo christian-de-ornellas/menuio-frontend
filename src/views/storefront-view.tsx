@@ -9,7 +9,7 @@ import {
     PaginationNext,
     PaginationPrevious
 } from "../components/ui/pagination";
-import {useStorefrontViewModel} from "../viewModels/storefront-view-model";
+import {useStorefrontViewModel} from "../viewModels/use-storefront-view-model";
 
 const StorefrontView = () => {
     const {items, handleSearch, setPage, page, limit, search} = useStorefrontViewModel();
@@ -43,10 +43,10 @@ const StorefrontView = () => {
                             alt={item.name}
                             className="w-full h-48 object-cover rounded-t-lg"
                         />
-                        <CardContent className="pt-4">
+                        <CardContent className="pt-4 w-full">
                             <h2 className="text-lg font-semibold">{item.title}</h2>
-                            <p className="">{item.description.length > 100
-                                ? item.description.slice(0, 100) + '...'
+                            <p className=""> {item.description.length > 60
+                                ? item.description.slice(0, 60) + '...'
                                 : item.description}</p>
                             <Button className="w-full mt-4 bg-green-600 hover:cursor-pointer hover:bg-green-500">Fazer
                                 pedido</Button>
