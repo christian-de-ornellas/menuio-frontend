@@ -7,7 +7,7 @@ interface GetMenuParams {
     search?: string;
 }
 
-const useGetMenu = ({page, limit, search}: GetMenuParams) => {
+const useGetMenuService = ({page, limit, search}: GetMenuParams) => {
     return useQuery({
         queryKey: ["menu", page, limit, search],
         queryFn: async () => {
@@ -22,4 +22,4 @@ const useGetMenu = ({page, limit, search}: GetMenuParams) => {
     });
 };
 
-export default useGetMenu;
+export default useGetMenuService;

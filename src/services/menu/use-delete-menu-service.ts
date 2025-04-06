@@ -2,7 +2,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import http from "../../lib/axios/http.ts";
 import {toast} from "react-toastify";
 
-const useDeleteMenu = () => {
+const useDeleteMenuService = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
@@ -25,4 +25,4 @@ const useDeleteMenu = () => {
     });
 };
 
-export default useDeleteMenu;
+export default useDeleteMenuService;

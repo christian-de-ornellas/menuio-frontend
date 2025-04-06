@@ -1,53 +1,12 @@
-import { cn } from "../../lib/utils";
-import { Button } from "../../components/ui/button";
-import { Card, CardContent } from "../../components/ui/card";
-import { Input } from "../../components/ui/input";
-import { Label } from "../../components/ui/label";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import useLoginHelper from "./use-login-helper";
-import {  useNavigate } from "react-router";
-import {toast} from "react-toastify";
+import {cn} from "../lib/utils";
+import {Button} from "../components/ui/button";
+import {Card, CardContent} from "../components/ui/card";
+import {Input} from "../components/ui/input";
+import {Label} from "../components/ui/label";
+import {useLoginViewModel} from "../viewModels/use-login-view-model";
 
-const loginSchema = z.object({
-    email: z.string().email("Email inválido"),
-    password: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
-
-export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
-    const navigate = useNavigate();
-   const {loginMutation} = useLoginHelper()
-
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm<LoginFormData>({
-        resolver: zodResolver(loginSchema),
-    });
-
-    const onSubmit = (data: LoginFormData) => {
-
-        loginMutation.mutate(data, {
-            onSuccess: (response) => {
-                const token = response?.token;
-                const userId = response?.profile?._id;
-                if (token) {
-                    localStorage.setItem("authToken", token);
-                    localStorage.setItem("userId", userId);
-                    navigate("/home");
-                    toast("Seja bem vindo ao nosso sistema")
-                }
-            },
-            onError: (error) => {
-                console.error("Erro ao fazer login:", error);
-                toast("Ops: aconteceu um error no nosso servidor.",{type: "error"})
-            }
-        });
-    };
+const LoginView = ({className, ...props}: any) => {
+    const {handleSubmit, register, onSubmit, errors, isSubmitting} = useLoginViewModel();
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -74,7 +33,8 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                                         </a>
                                     </div>
                                     <Input id="password" type="password" {...register("password")} />
-                                    {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                                    {errors.password &&
+                                        <p className="text-red-500 text-sm">{errors.password.message}</p>}
                                 </div>
                                 <Button type="submit" className="w-full" disabled={isSubmitting}>
                                     {isSubmitting ? "Aguarde..." : "Entrar"}
@@ -91,3 +51,4 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         </div>
     );
 }
+export default LoginView;

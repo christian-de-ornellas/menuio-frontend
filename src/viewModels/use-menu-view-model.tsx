@@ -1,25 +1,24 @@
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {useState} from "react";
-import usePostMenu from "../services/menu/use-post-menu.ts";
-import useGetMenu from "../services/menu/use-get-menu.ts";
+import usePostMenuService from "../services/menu/use-post-menu-service";
+import useGetMenuService from "../services/menu/use-get-menu-service";
 import {useForm} from "react-hook-form";
-import {toast} from "react-toastify";
-import useDeleteMenu from "../services/menu/use-delete-menu";
+import useDeleteMenuService from "../services/menu/use-delete-menu-service";
 import {Button} from "../components/ui/button.tsx";
 import {useReactTable, getCoreRowModel, ColumnDef, flexRender} from "@tanstack/react-table";
 import {IMenu} from "../models/menu.ts";
-
+import {showToast} from "../lib/toastify/toastify.ts";
 
 export const useMenuViewModel = () => {
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const postMenu = usePostMenu();
+    const postMenu = usePostMenuService();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(10);
 
-    const getMenu = useGetMenu({page, limit});
-    const deleteMenu = useDeleteMenu();
+    const getMenu = useGetMenuService({page, limit});
+    const deleteMenu = useDeleteMenuService();
     const userId = localStorage.getItem("userId");
 
     const menuSchema = z.object({
@@ -29,9 +28,7 @@ export const useMenuViewModel = () => {
     });
 
     const onSubmit = (data: MenuFormData) => {
-
         if (!userId) return
-
         postMenu.mutate({
             title: data.title,
             description: data.description,
@@ -39,14 +36,13 @@ export const useMenuViewModel = () => {
             userId
         });
         setIsDialogOpen(false)
-        toast("Item adicionado com sucesso", {type: "success"});
+        showToast("Item adicionado com sucesso", {type: "success"});
         reset();
 
         setImagePreview(null);
     };
 
     type MenuFormData = z.infer<typeof menuSchema>;
-
 
     const {
         register,

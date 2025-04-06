@@ -1,8 +1,7 @@
-import useGetMenu from "../../hooks/menu/use-get-menu";
-
+import useGetMenuService from "../../services/menu/use-get-menu-service.ts";
 
 export default function HomePage() {
-    const menu = useGetMenu({page: 1, limit: 10});
+    const menu = useGetMenuService({page: 1, limit: 10});
 
     return (
         <article className="flex gap-4">

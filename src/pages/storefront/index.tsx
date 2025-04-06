@@ -2,10 +2,9 @@ import {Card, CardContent} from "../../components/ui/card"
 import {Button} from "../../components/ui/button"
 import {Input} from "../../components/ui/input"
 import {useState} from "react"
-import useGetMenu from "../../hooks/menu/use-get-menu";
+import useGetMenuService from "../../services/menu/use-get-menu-service.ts";
 import {MagnifyingGlass} from "react-loader-spinner";
 import {useDebounce} from "../../hooks/use-debounce.ts";
-
 
 import {
     Pagination,
@@ -20,11 +19,11 @@ export const StorefrontPage = () => {
     const debouncedSearch = useDebounce(search, 1000);
     const [page, setPage] = useState<number>(1);
     const [limit] = useState<number>(6);
-    const items = useGetMenu({page, limit, search: debouncedSearch})
+    const items = useGetMenuService({page, limit, search: debouncedSearch})
 
     const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value);
-        setPage(1); // reset page on search
+        setPage(1);
     };
 
 
