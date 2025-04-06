@@ -1,18 +1,9 @@
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useState} from "react";
-import {Button} from "../../components/ui/button";
-import {Input} from "../../components/ui/input";
-import {Label} from "../../components/ui/label";
-import {Card, CardContent} from "../../components/ui/card";
-import {useReactTable, getCoreRowModel, ColumnDef, flexRender} from "@tanstack/react-table";
-import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "../../components/ui/dialog";
-import {Table, TableHeader, TableRow, TableHead, TableBody, TableCell} from "../../components/ui/table";
-import useGetMenu from "../../hooks/menu/use-get-menu";
-import usePostMenu from "../../hooks/menu/use-post-menu";
-import useDeleteMenu from "../../hooks/menu/use-delete-menu";
-import {toast} from 'react-toastify';
+import {Button} from "../components/ui/button";
+import {Input} from "../components/ui/input";
+import {Label} from "../components/ui/label";
+import {Card, CardContent} from "../components/ui/card";
+import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "../components/ui/dialog";
+import {Table, TableHeader, TableRow, TableHead, TableBody, TableCell} from "../components/ui/table";
 import {MagnifyingGlass} from "react-loader-spinner";
 import {
     Pagination,
@@ -20,104 +11,27 @@ import {
     PaginationItem,
     PaginationNext,
     PaginationPrevious
-} from "../../components/ui/pagination";
+} from "../components/ui/pagination";
+import {useMenuViewModel} from "../viewModels/use-menu-view-model";
 
-
-const menuSchema = z.object({
-    title: z.string().min(3, "O título deve ter pelo menos 3 caracteres"),
-    description: z.string().min(10, "A descrição deve ter pelo menos 10 caracteres"),
-    image: z.instanceof(FileList).refine((files) => files.length === 1, "Selecione uma imagem"),
-});
-
-type MenuFormData = z.infer<typeof menuSchema>;
-
-type MenuItem = {
-    _id?: string;
-    title: string;
-    description: string;
-    image: File;
-    userId?: string;
-};
-
-const CreateMenuPage = () => {
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const postMenu = usePostMenu();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [page, setPage] = useState<number>(1);
-    const [limit] = useState<number>(10);
-
-    const menu = useGetMenu({page, limit})
-
-
+const MenuView = () => {
     const {
-        register,
+        isDialogOpen,
+        setIsDialogOpen,
         handleSubmit,
-        formState: {errors, isSubmitting},
-        reset,
-    } = useForm<MenuFormData>({
-        resolver: zodResolver(menuSchema),
-    });
-
-    const onSubmit = (data: MenuFormData) => {
-
-        const userId = localStorage.getItem("userId");
-
-        if (!userId) return
-
-        postMenu.mutate({
-            title: data.title,
-            description: data.description,
-            image: data.image[0],
-            userId
-        });
-        setIsDialogOpen(false)
-        toast("Item adicionado com sucesso", {type: "success"});
-        reset();
-
-        setImagePreview(null);
-    };
-
-    const deleteMenu = useDeleteMenu();
-
-    const columns: ColumnDef<MenuItem>[] = [
-        {accessorKey: "title", header: "Título"},
-        {accessorKey: "description", header: "Descrição"},
-        {
-            accessorKey: "image",
-            header: "Imagem",
-            cell: ({row}) => (
-                <img
-                    src={`${import.meta.env.VITE_PUBLIC}${row.original?.image}`}
-                    alt="Menu"
-                    className="w-16 h-16 object-cover"
-                />
-            ),
-        },
-        {
-            id: "actions",
-            header: "Ações",
-            cell: ({row}) => (
-                <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => {
-                        const confirmed = window.confirm(`Tem certeza que deseja excluir "${row.original.title}"?`);
-                        if (confirmed && row.original._id) {
-                            deleteMenu.mutate(row.original._id);
-                        }
-                    }}
-                >
-                    Excluir
-                </Button>
-            ),
-        },
-    ];
-
-    const table = useReactTable({
-        data: menu?.data?.items || [],
-        columns,
-        getCoreRowModel: getCoreRowModel(),
-    });
+        onSubmit,
+        register,
+        errors,
+        imagePreview,
+        setImagePreview,
+        isSubmitting,
+        getMenu,
+        page,
+        setPage,
+        table,
+        limit,
+        flexRender
+    } = useMenuViewModel()
 
     return (
         <div className="flex flex-col gap-6">
@@ -168,7 +82,7 @@ const CreateMenuPage = () => {
                     </Card>
                 </DialogContent>
             </Dialog>
-            {!menu.isLoading ? (<><Table>
+            {!getMenu.isLoading ? (<><Table>
                 <TableHeader>
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -208,10 +122,10 @@ const CreateMenuPage = () => {
                             <PaginationNext
                                 size={10}
                                 onClick={() => {
-                                    const totalPages = Math.ceil((menu?.data?.totalItems || 0) / limit);
-                                    setPage((prev) => Math.min(prev + 1, totalPages));
+                                    const totalPages = Math.ceil((getMenu?.data?.totalItems || 0) / limit);
+                                    setPage((prev: number) => Math.min(prev + 1, totalPages));
                                 }}
-                                className={menu?.data?.items.length < limit ? "pointer-events-none opacity-50" : ""}
+                                className={getMenu?.data?.items.length < limit ? "pointer-events-none opacity-50" : ""}
                             />
                         </PaginationItem>
                     </PaginationContent>
@@ -229,4 +143,4 @@ const CreateMenuPage = () => {
     );
 };
 
-export default CreateMenuPage;
+export default MenuView;

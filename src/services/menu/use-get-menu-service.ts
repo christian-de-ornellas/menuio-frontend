@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 import http from "../../lib/axios/http.ts";
 
 interface GetMenuParams {
@@ -7,7 +7,7 @@ interface GetMenuParams {
     search?: string;
 }
 
-const useGetMenu = ({ page, limit, search }: GetMenuParams) => {
+const useGetMenuService = ({page, limit, search}: GetMenuParams) => {
     return useQuery({
         queryKey: ["menu", page, limit, search],
         queryFn: async () => {
@@ -17,11 +17,9 @@ const useGetMenu = ({ page, limit, search }: GetMenuParams) => {
                 endpoint += `&search=${encodeURIComponent(search)}`;
             }
 
-            console.log({ endpoint });
-
-            return http({ endpoint, method: "get" });
+            return http({endpoint, method: "get"});
         }
     });
 };
 
-export default useGetMenu;
+export default useGetMenuService;

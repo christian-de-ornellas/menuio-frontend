@@ -26,7 +26,7 @@ const createMenu = async (data: CreateMenuItem) => {
     return response.data;
 };
 
-export default function usePostMenu() {
+export default function usePostMenuService() {
     const queryClient = useQueryClient();
 
     return useMutation({
